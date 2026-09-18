@@ -16,10 +16,10 @@ Overall, the project demonstrates the practical use of Terraform, Docker, Azure 
 
 ### Task Service
 
-![Task Service](./Task_Service.png)
+<img src="https://raw.githubusercontent.com/Veereshmv/taskhub/main/Task_Service.png" width="800">
 
 ### File Service
 
-![File Service](./File_Service_1.png)
+<img src="https://raw.githubusercontent.com/Veereshmv/taskhub/main/File_Service_1.png" width="800">
 
-![File Service](./File_Service_2.png)
+<img src="https://raw.githubusercontent.com/Veereshmv/taskhub/main/File_Service_2.png" width="800">
