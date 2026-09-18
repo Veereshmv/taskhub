@@ -14,6 +14,10 @@ Overall, the project demonstrates the practical use of Terraform, Docker, Azure 
 
 ## Screenshots
 
+## Architecture
+
+![TaskHub Architecture](architecture.png)
+
 ### Task Service
 
 ![Task Service](https://github.com/Veereshmv/taskhub/blob/main/Task%20_Service.png?raw=true)
