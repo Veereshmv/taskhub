@@ -11,38 +11,3 @@ Azure DevOps YAML pipelines are used to build and publish container images and d
 Sensitive application credentials are managed through Azure Key Vault, while Kubernetes configuration is handled using ConfigMaps and Secrets.
 
 Overall, the project demonstrates the practical use of Terraform, Docker, Azure DevOps, AKS, ACR, Kubernetes, and Azure services to deploy and manage a containerized application in Azure.
-
-## Architecture
-
-Developer
-   |
-   v
-Azure Repos
-   |
-   v
-Azure DevOps CI
-   |
-   v
-Docker Images
-   |
-   v
-Azure Container Registry
-   |
-   v
-Azure DevOps CD
-   |
-   +-------------------+
-   |                   |
-   v                   v
-  AKS             Azure App Service
-   |                   |
-   v                Frontend
-NGINX Ingress
-   |
-   +----------+----------+
-   |                     |
-   v                     v
-Task Service        File Service
-   |                     |
-   v                     v
-Azure SQL          Azure Blob Storage
