@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+}
+
+.container {
+    width: 700px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 80px;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+hr {
+    margin: 30px 0;
+}
+
+.task {
+    padding: 10px;
+    margin: 10px 0;
+    background: #eeeeee;
+}

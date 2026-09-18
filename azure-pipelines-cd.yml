@@ -1,0 +1,112 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  azureServiceConnection: taskhub-azure-sc
+  resourceGroup: rg-taskhub-dev
+  aksCluster: aks-taskhub-dev
+  namespace: taskhub
+  acrLoginServer: taskhubacrdev260826.azurecr.io
+  keyVaultName: kv-taskhub-dev260826
+
+parameters:
+- name: imageTag
+  displayName: Image Tag
+  type: string
+  default: '2.0'
+
+stages:
+
+- stage: DeployToAKS
+  displayName: Deploy Backend to AKS
+
+  jobs:
+  - job: Deploy
+    displayName: Deploy Task and File Services
+
+    steps:
+
+    - task: AzureKeyVault@2
+      displayName: Retrieve Secrets from Key Vault
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        KeyVaultName: $(keyVaultName)
+        SecretsFilter: 'SQL-USER,SQL-PASSWORD,AZURE-STORAGE-CONNECTION-STRING'
+        RunAsPreJob: false
+
+    - task: KubernetesManifest@1
+      displayName: Deploy ConfigMap
+      inputs:
+        action: deploy
+        connectionType: azureResourceManager
+        azureSubscriptionConnection: $(azureServiceConnection)
+        azureResourceGroup: $(resourceGroup)
+        kubernetesCluster: $(aksCluster)
+        namespace: $(namespace)
+        manifests: |
+          kubernetes/configmap.yaml
+
+    - task: KubernetesManifest@1
+      displayName: Create Kubernetes Secret
+      inputs:
+        action: createSecret
+        connectionType: azureResourceManager
+        azureSubscriptionConnection: $(azureServiceConnection)
+        azureResourceGroup: $(resourceGroup)
+        kubernetesCluster: $(aksCluster)
+        namespace: $(namespace)
+        secretType: generic
+        secretName: taskhub-secrets
+        secretArguments: >-
+          --from-literal=SQL_USER="$(SQL-USER)"
+          --from-literal=SQL_PASSWORD="$(SQL-PASSWORD)"
+          --from-literal=AZURE_STORAGE_CONNECTION_STRING="$(AZURE-STORAGE-CONNECTION-STRING)"
+
+    - task: KubernetesManifest@1
+      displayName: Deploy Task Service
+      inputs:
+        action: deploy
+        connectionType: azureResourceManager
+        azureSubscriptionConnection: $(azureServiceConnection)
+        azureResourceGroup: $(resourceGroup)
+        kubernetesCluster: $(aksCluster)
+        namespace: $(namespace)
+        manifests: |
+          kubernetes/task-deployment.yaml
+          kubernetes/task-service.yaml
+        containers: |
+          $(acrLoginServer)/taskhub-task-service:${{ parameters.imageTag }}
+
+    - task: KubernetesManifest@1
+      displayName: Deploy File Service
+      inputs:
+        action: deploy
+        connectionType: azureResourceManager
+        azureSubscriptionConnection: $(azureServiceConnection)
+        azureResourceGroup: $(resourceGroup)
+        kubernetesCluster: $(aksCluster)
+        namespace: $(namespace)
+        manifests: |
+          kubernetes/file-deployment.yaml
+          kubernetes/file-service.yaml
+        containers: |
+          $(acrLoginServer)/taskhub-file-service:${{ parameters.imageTag }}
+
+- stage: DeployFrontend
+  displayName: Deploy Frontend to App Service
+  dependsOn: DeployToAKS
+
+  jobs:
+  - job: DeployFrontend
+    displayName: Deploy Frontend Container
+
+    steps:
+
+    - task: AzureWebAppContainer@1
+      displayName: Deploy Frontend Container
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        appName: taskhub-frontend-dev260826
+        containers: $(acrLoginServer)/taskhub-frontend:${{ parameters.imageTag }}

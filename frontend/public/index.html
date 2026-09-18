@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TaskHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>TaskHub</h1>
+
+    <p>Microservices Task Management Application</p>
+
+    <div class="task-form">
+
+        <h2>Create Task</h2>
+
+        <input
+            id="taskName"
+            type="text"
+            placeholder="Task name"
+        >
+
+        <textarea
+            id="description"
+            placeholder="Task description"
+        ></textarea>
+
+        <button onclick="createTask()">
+            Add Task
+        </button>
+
+    </div>
+
+    <hr>
+
+    <h2>Tasks</h2>
+
+    <div id="taskList">
+        Backend service will provide tasks here.
+    </div>
+
+    <hr>
+
+    <div class="upload-form">
+
+        <h2>Upload Attachment</h2>
+
+        <input
+            id="fileInput"
+            type="file"
+        >
+
+        <button onclick="uploadFile()">
+            Upload
+        </button>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

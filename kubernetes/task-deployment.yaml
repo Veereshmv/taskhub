@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: task-service
+  namespace: taskhub
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: task-service
+
+  template:
+    metadata:
+      labels:
+        app: task-service
+
+    spec:
+      containers:
+        - name: task-service
+          image: taskhubacrdev260826.azurecr.io/taskhub-task-service:2.0
+          imagePullPolicy: Always
+          
+
+          ports:
+            - containerPort: 3001
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 20
+
+          env:
+            - name: SQL_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: taskhub-config
+                  key: SQL_SERVER
+
+            - name: SQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: taskhub-config
+                  key: SQL_DATABASE
+
+            - name: SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: taskhub-secrets
+                  key: SQL_USER
+
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taskhub-secrets
+                  key: SQL_PASSWORD

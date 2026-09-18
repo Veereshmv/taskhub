@@ -1,0 +1,30 @@
+services:
+
+  task-service:
+    build:
+      context: ./services/task-service
+    container_name: task-service
+    ports:
+      - "3001:3001"
+
+  file-service:
+    build:
+      context: ./services/file-service
+    container_name: file-service
+    ports:
+      - "3002:3002"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      TASK_API_URL: http://localhost:3001
+      FILE_API_URL: http://localhost:3002
+    depends_on:
+      - task-service
+      - file-service
+
+      ####3

@@ -1,0 +1,13 @@
+.env
+terraform.tfvars
+node_modules/
+*.log
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+*.tfvars
+*.tfvars.json

@@ -1,0 +1,14 @@
+{
+  "name": "task-service",
+  "version": "1.0.0",
+  "description": "Task microservice for TaskHub",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mssql": "^12.7.0"
+  }
+}

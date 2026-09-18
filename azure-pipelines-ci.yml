@@ -1,0 +1,55 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  acrServiceConnection: taskhub-acr-sc
+  acrLoginServer: taskhubacrdev260826.azurecr.io
+
+stages:
+
+- stage: BuildAndPush
+  displayName: Build and Push Images
+
+  jobs:
+  - job: Build
+    displayName: Build Docker Images
+
+    steps:
+
+    - task: Docker@2
+      displayName: Build and Push Task Service
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(acrServiceConnection)
+        repository: taskhub-task-service
+        Dockerfile: services/task-service/Dockerfile
+        buildContext: services/task-service
+        tags: |
+          $(Build.BuildId)
+
+    - task: Docker@2
+      displayName: Build and Push File Service
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(acrServiceConnection)
+        repository: taskhub-file-service
+        Dockerfile: services/file-service/Dockerfile
+        buildContext: services/file-service
+        tags: |
+          $(Build.BuildId)
+
+    - task: Docker@2
+      displayName: Build and Push Frontend
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(acrServiceConnection)
+        repository: taskhub-frontend
+        Dockerfile: frontend/Dockerfile
+        buildContext: frontend
+        tags: |
+          $(Build.BuildId)
